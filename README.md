@@ -38,7 +38,7 @@ has a possibility to map reads without first generating the index (ideal when mu
 
 ## Parameters
 ### index 
-    `-f`    path of the reference fasta file
+    '-f'    path of the reference fasta file
     `-kmer` the size of the kmer to use
     `-gz`   the fasta file is gziped (true/false)
     `-o`    output directory for the index files
