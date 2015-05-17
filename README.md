@@ -38,15 +38,15 @@ has a possibility to map reads without first generating the index (ideal when mu
 
 ## Parameters
 ### index 
-    '-f'    path of the reference fasta file
-    `-kmer` the size of the kmer to use
-    `-gz`   the fasta file is gziped (true/false)
-    `-o`    output directory for the index files
+*    `-f`    path of the reference fasta file
+*    `-kmer` the size of the kmer to use
+*    `-gz`   the fasta file is gziped (true/false)
+*    `-o`    output directory for the index files
 ### map
-    `-fastq`    the fastq file to map
-    `-gz`   the fastq file is gziped (true/false)
-    `-o`    the output directory
-    `-kmer` the used kmer for the index generation (only for use with -reference)
-    `-reference`    the path to the reference fasta file (index is generated before mapping, 
+*    `-fastq`    the fastq file to map
+*    `-gz`   the fastq file is gziped (true/false)
+*    `-o`    the output directory
+*    `-kmer` the used kmer for the index generation (only for use with -reference)
+*    `-reference`    the path to the reference fasta file (index is generated before mapping, 
 index is not writen to a drive)(-kmer option is needed, -index option is denied)
-    `-index`    the path to the index files(-kmer option is denied, -reference is not needed)
+*    `-index`    the path to the index files(-kmer option is denied, -reference is not needed)
