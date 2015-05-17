@@ -11,16 +11,21 @@ This code has to be compiled before use.
 ## Background
 I created kmap as an excercise to understand how mappers are working, starting from scratch.
 Starting from scratch, multiple options arose: 
+
 1. Reference indexing or Read indexing? As the reads are compaired with the reference, 
 it seems logic to index the reference.
+
 2. How to index? Using a Hash-table is a simple technique to find kmers in the reference. 
 The problem with this indexing technique is that with big genomes, the memory use can become really high.
+
 3. How to find the possible location of a read? As the reference is stored in a Hash-table, 
 splitting the read in kmers, and find them is straight forward.
+
 4. How to find mismatches and indels, when a possible location is found? By using a seed and extend 
 approach, the found kmer is extended on both ends, while allowing possible mismatches and indels. 
 Because I started from scratch, I implemented this logically. The performance of this part could be 
 improved by using the Smith-Waterman algorithm.
+
 5. How to calculate mapping quality? The chance that the read is the same as on the found possition 
 on the reference follows the binomial probability. The chance is devided by the sumation of all 
 probabilities of all possible mapping locations, with a maximum phred score of 60. (This follows 
