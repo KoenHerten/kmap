@@ -24,6 +24,7 @@ import kmap.infrastructure.IndexWriter;
 import kmap.infrastructure.SequenceIndexWriter;
 import kmap.model.IndexCollection;
 import kmap.model.Location;
+import kmap.model.MappingParameters;
 
 /**
  *
@@ -31,26 +32,18 @@ import kmap.model.Location;
  */
 public class GenomeIndexing {
     
-    private final String fastaFile;
-    private final String outputDir;
-    private final boolean isZippedFasta;
-    private final int kmer;
-    private final int overlap = 200;
-    private final int readLength = 10000;
     public static final String SAM_HEADER_FILE_NAME = "KA.genome.header.gz";
+    private MappingParameters parameters;
     
-    public GenomeIndexing(String fastaFile, int kmer, boolean isZippedFasta, String outputDir){
-        this.fastaFile = fastaFile;
-        this.kmer = kmer;
-        this.isZippedFasta = isZippedFasta;
-        this.outputDir = outputDir;
+    public GenomeIndexing(MappingParameters parameters){
+        this.parameters = parameters;
     }
     
     public void createAndSaveIndex() throws IOException{
         //get the index collection
         IndexCollection indexCollection = this.createCompleteIndex();
         //create the header of the sam file
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(new File(this.outputDir + File.separator + this.SAM_HEADER_FILE_NAME)))));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(new File(parameters.getOutputDir() + File.separator + this.SAM_HEADER_FILE_NAME)))));
         ArrayList<String> chr_list = new ArrayList<>(indexCollection.getChromosomeLengthMap().keySet());
         Collections.sort(chr_list);
         for (String chr : chr_list){
@@ -59,11 +52,12 @@ public class GenomeIndexing {
         writer.close();
         
         //write the index
-        IndexWriter indexWriter = new IndexWriter(this.outputDir, this.kmer);
+        
+        IndexWriter indexWriter = new IndexWriter(this.parameters.getOutputDir(), this.parameters.getKmer());
         indexWriter.printIndex(indexCollection.getSequenceLocationMap());
         
         //write the reference parts
-        SequenceIndexWriter sequenceIndexWriter = new SequenceIndexWriter(this.outputDir, this.overlap, this.readLength);
+        SequenceIndexWriter sequenceIndexWriter = new SequenceIndexWriter(this.parameters.getOutputDir(), this.parameters.getOverlap(), this.parameters.getReadLength());
         for (String chromosome : indexCollection.getChromosomePositionSequenceMap().keySet()){
             for (int position : indexCollection.getChromosomePositionSequenceMap().get(chromosome).keySet()){
                 String sequence = indexCollection.getChromosomePositionSequenceMap().get(chromosome).get(position);
@@ -76,8 +70,8 @@ public class GenomeIndexing {
     public IndexCollection createCompleteIndex() throws IOException{
         
         BufferedReader fastaBufferedReader;
-        File file = new File(this.fastaFile);
-        if (this.isZippedFasta){
+        File file = new File(this.parameters.getReference());
+        if (this.parameters.isZippedReference()){
             fastaBufferedReader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(file))));
         }else{
             fastaBufferedReader = new BufferedReader(new InputStreamReader(new DataInputStream(new FileInputStream(file))));
@@ -95,7 +89,7 @@ public class GenomeIndexing {
         while ((line = fastaBufferedReader.readLine()) != null){
             if (line.contains(">")){
                 if (! chromosome.equals("")){
-                    chromosome_length_map.put(chromosome, position + this.kmer);
+                    chromosome_length_map.put(chromosome, position + this.parameters.getKmer());
                 }
                 chromosome = line.split(" ")[0].replace(">", "");
                 previousLine = "";
@@ -113,26 +107,26 @@ public class GenomeIndexing {
                 System.out.println("Start chromosome " + chromosome);
             }else{
                 sequence += line.toLowerCase();
-                while (sequence.length() > (this.readLength + this.overlap)){
+                while (sequence.length() > (this.parameters.getReadLength() + this.parameters.getOverlap())){
                     //print sequence
                     if (! chromosome_position_sequence_map.containsKey(chromosome)){
                         chromosome_position_sequence_map.put(chromosome, new HashMap<>());
                     }
                     chromosome_position_sequence_map.get(chromosome).put(position, sequence);
-                    sequence = sequence.substring(this.readLength);
-                    position += this.readLength;
+                    sequence = sequence.substring(this.parameters.getReadLength());
+                    position += this.parameters.getReadLength();
                 }
                 String sequenceLine = line;
-                if (previousLine.length() - this.kmer > 0){
-                    sequenceLine = previousLine.substring(previousLine.length() - this.kmer +1) + line;
+                if (previousLine.length() - this.parameters.getKmer() > 0){
+                    sequenceLine = previousLine.substring(previousLine.length() - this.parameters.getKmer() +1) + line;
                     positionForHash = positionForHash;
                 }
                 //System.out.println("" + sequence);
                 if (positionForHash % 10000 == 0){
                     System.out.println("\tProcessed " + positionForHash + " bp");
                 }
-                for (int i = 0; i <= sequenceLine.length() - this.kmer; i++){
-                    String sub = sequenceLine.substring(i, i + this.kmer).toLowerCase();
+                for (int i = 0; i <= sequenceLine.length() - this.parameters.getKmer(); i++){
+                    String sub = sequenceLine.substring(i, i + this.parameters.getKmer()).toLowerCase();
                     if (! sub.contains("n")){
                         //interesting subsequence (kmer)
                         Location location = new Location(chromosome, positionForHash + i);
@@ -145,13 +139,13 @@ public class GenomeIndexing {
                     }
                 }
                 //positionForHash += line.length();
-                positionForHash += (sequenceLine.length() -this.kmer +1);
+                positionForHash += (sequenceLine.length() -this.parameters.getKmer() +1);
                 previousLine = line;
             }
         }
         
         if (! chromosome.equals("")){
-            chromosome_length_map.put(chromosome, position + this.kmer);
+            chromosome_length_map.put(chromosome, position + this.parameters.getKmer());
         }
         fastaBufferedReader.close();
             
@@ -164,7 +158,7 @@ public class GenomeIndexing {
         
         IndexCollection indexCollection = new IndexCollection(sequence_location_map, 
                 chromosome_length_map, chromosome_position_sequence_map, 
-                this.kmer, this.overlap, this.readLength);
+                this.parameters.getKmer(), this.parameters.getOverlap(), this.parameters.getReadLength());
         return indexCollection;
     }
 }

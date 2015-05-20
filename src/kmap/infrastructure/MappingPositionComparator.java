@@ -16,7 +16,15 @@ public class MappingPositionComparator implements Comparator<MappingPosition>{
 
     @Override
     public int compare(MappingPosition o1, MappingPosition o2) {
-        return o1.getScore() - o2.getScore();
+        if (o1.getScore() == o2.getScore()){
+            return 0;
+        }
+        if (o1.getScore() > o2.getScore()){
+            return 1;
+        }
+        //if (o1.getScore() < o2.getScore())
+        return -1;
+        
     }
     
 }

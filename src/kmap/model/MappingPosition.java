@@ -19,13 +19,13 @@ public final class MappingPosition {
     private final String chromosome;
     private final int position;
     private final int edit;
-    private final int score;
+    private final double score;
     private final boolean reverse;
     private int mismatches;
     private int matches;
     private int interestingPositionsCount;
 
-    public MappingPosition(String sequence, String cigar, String chromosome, int position, int edit, int score){
+    public MappingPosition(String sequence, String cigar, String chromosome, int position, int edit, double score){
         this.sequence = sequence;
         this.longCigar = cigar;
         this.cigar = ReadAndCigarManipulation.getCigar(cigar);
@@ -37,7 +37,7 @@ public final class MappingPosition {
         this.calculateCigarVariables();
     }
 
-    public MappingPosition(String sequence, String cigar, String chromosome, int position, int edit, int score, boolean reverse){
+    public MappingPosition(String sequence, String cigar, String chromosome, int position, int edit, double score, boolean reverse){
         this.sequence = sequence;
         this.longCigar = cigar;
         this.cigar = ReadAndCigarManipulation.getCigar(cigar);
@@ -73,7 +73,7 @@ public final class MappingPosition {
         return this.edit;
     }
 
-    public int getScore(){
+    public double getScore(){
         return this.score;
     }
 
@@ -150,7 +150,7 @@ public final class MappingPosition {
 
     @Override
     public int hashCode(){
-        return (int) this.chromosome.hashCode() * this.position * this.score;
+        return (int) this.chromosome.hashCode() * this.position * (int) this.score;
     }
 
 }
