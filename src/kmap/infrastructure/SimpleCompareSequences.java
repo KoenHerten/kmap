@@ -70,7 +70,11 @@ public class SimpleCompareSequences implements CompareSequences{
                 match_score = mismatch_match_score;
                 mismatch_change_score = further_compare_output.getChangeScore();
             }else{
-                mismatch_cigar = "X" + further_compare_output.getCigar();
+                String base = "X";
+                if (this.parameters.getCigarType().equals("traditional")){
+                    base = "M";
+                }
+                mismatch_cigar = base + further_compare_output.getCigar();
                 mismatch_score = further_compare_output.getScore()
                         + this.parameters.getMismatch_base_score();
                 mismatch_edit = further_compare_output.getEdit() + 1;

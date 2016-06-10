@@ -33,6 +33,7 @@ public class MappingParameters {
         this.string_arguments.put(MappingArguments.GZIP, "false");
         this.string_arguments.put(MappingArguments.GZIP_REFERENCE, "false");
         this.string_arguments.put(MappingArguments.MAPPING_QUALITY_TYPE, "bwa-like");
+        this.string_arguments.put(MappingArguments.CIGAR_TYPE, "traditional");
     }
     
     public void setParameter(String parameter_name, String parameter_value){
@@ -172,6 +173,10 @@ public class MappingParameters {
         return this.string_arguments.get(MappingArguments.MAPPING_QUALITY_TYPE);
     }
     
+    public String getCigarType(){
+        return this.string_arguments.get(MappingArguments.CIGAR_TYPE);
+    }
+    
     public void getHelp(){
             System.out.println("Usage: java -jar kmap.java [name] [options]");
             System.out.println("Index generation (not mandatory)");
@@ -194,6 +199,7 @@ public class MappingParameters {
                     + "(-kmer option is needed, -index option is denied)");
             System.out.println("\t -index \t the path to the index files"
                     + "(-kmer option is denied, -reference is not needed)");
+            System.out.println("\t -mapq \t the type of mapping quality: simple or bwalike (standard)");
             System.out.println("\t\tExample: java -jar kmap.jar map -gz false -fastq test.fastq -o . -index .");
             System.out.println("\t\tExample: java -jar kmap.jar map -gz false -fastq test.fastq -o . -reference chr22.part2.fa -kmer 15");
     }

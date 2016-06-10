@@ -50,12 +50,24 @@ has a possibility to map reads without first generating the index (ideal when mu
 *    `-reference`    the path to the reference fasta file (index is generated before mapping, 
 index is not writen to a drive)(`-kmer` option is needed, `-index` option is denied)
 *    `-index`    the path to the index files(`-kmer` option is denied, `-reference` is not needed)
+*    `-mapq`     the type of mapping quality: simple or bwalike (standard)
+
+###Mapq types
+*    `simple`    unique mapping read gets a score of 60, mapping on 2 places: 3, on 3 places: 2, on 9 or less: 1, else 0
+*    `bwalike`   this is the standard. Here the score is a phred score of the probability. This is a binomial probability, 
+where the number of bases equal to the reference is used as number of successes, the number of bases that are not clipped 
+as the number of trials (matches, mismatches, indels), and the probability is 0.99 (base probability, the illumina error)  
 
 ##Examples
 There is test data in the test_data folder. This folder contains a very small genome, and a small simulated
 read file. The name of this read file also contains the expected cigar string.
+
 Example of the index generation:
-java -jar kmap.jar index -reference reference.fa -kmer 22 -gz false -o .
+
+`java -jar kmap.jar index -reference reference.fa -kmer 22 -gz false -o .`
+
 Examples of the mapping (with index, or with index generation):
-java -jar kmap.jar map -gz false -fastq test.fastq -o . -index .
-java -jar kmap.jar map -gz false -fastq test.fastq -o . -reference chr22.part2.fa -kmer 15
+
+`java -jar kmap.jar map -gz false -fastq test.fastq -o . -index .`
+
+`java -jar kmap.jar map -gz false -fastq test.fastq -o . -reference chr22.part2.fa -kmer 15`

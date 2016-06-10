@@ -72,6 +72,10 @@ public enum MappingArguments {
      */
     MAPPING_QUALITY_TYPE("-mapq", "string"),
     /**
+     * the type of cigar string
+     */
+    CIGAR_TYPE("-cigar", "string"),
+    /**
      * If the given argument was invalid
      */
     INVALID_ARGUMENT ("ERROR", "null");
