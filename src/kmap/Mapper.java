@@ -22,18 +22,19 @@ public class Mapper {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String input;
+        //test input parameters
+        //String input;
         //index input
         //input = "index -reference /home/koen/Downloads/chr22.part2.fa -kmer 22 -gz false -o /home/koen/Downloads";
         //mapping input
-        input = "map -gz false"
-                + " -fastq /home/koen/Downloads/test.fastq"
-                + " -o /home/koen/Downloads"
-        //        + " -reference /home/koen/Downloads/chr22.part2.fa "
-                + " -index /home/koen/Downloads"
-                + " -kmer 13";
+        //input = "map -gz false"
+        //        + " -fastq /home/koen/Downloads/test.fastq"
+        //        + " -o /home/koen/Downloads"
+        //        + " -reference /home/koen/Downloads/chr22.part2.fa"
+        //        + " -index /home/koen/Downloads"
+        //        + " -kmer 15";
         //input = "-help";
-        args = input.split(" ");
+        //args = input.split(" ");
         if (args.length == 0 || args[0].toLowerCase().equals("-h")
                 || args[0].toLowerCase().equals("-help")){
             MappingParameters parameters = new MappingParameters("help");

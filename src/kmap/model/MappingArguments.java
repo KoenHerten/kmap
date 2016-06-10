@@ -14,7 +14,7 @@ public enum MappingArguments {
     /**
      * The kmer size
      */
-    KMER ("-k", "int"),
+    KMER ("-kmer", "int"),
     /**
      * The seed distance in the read (can be high for low error rates, and low snp/indel rates)
      */

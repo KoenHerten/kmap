@@ -71,15 +71,22 @@ public class MappingParameters {
     
     public boolean areRequiredParametersSet(){
         if (this.tooltype.toLowerCase().equals("index")){
-            if (! this.string_arguments.containsKey(MappingArguments.REFERENCE)){
-                return false;
-            }else{
+            //the indexing needs a reference genome and kmer
+            System.out.println("" + this.string_arguments.containsKey(MappingArguments.REFERENCE));
+            System.out.println("" + this.string_arguments.containsKey(MappingArguments.KMER));
+            if (this.string_arguments.containsKey(MappingArguments.REFERENCE)
+                    && this.string_arguments.containsKey(MappingArguments.KMER)){
                 return true;
+            }else{
+                return false;
             }
         }else if (this.tooltype.toLowerCase().equals("map")){
-            if (! this.string_arguments.containsKey(MappingArguments.INDEX_LOCATION)
-                    && ! (this.string_arguments.containsKey(MappingArguments.REFERENCE)
+            //the mapping needs a reference location
+            //or a reference and kmer
+            if (this.string_arguments.containsKey(MappingArguments.INDEX_LOCATION)
+                    || (this.string_arguments.containsKey(MappingArguments.REFERENCE)
                     && this.integer_arguments.containsKey(MappingArguments.KMER))){
+            }else{
                 return false;
             }
             if (! this.string_arguments.containsKey(MappingArguments.FASTQ_FILE)){
@@ -173,10 +180,11 @@ public class MappingParameters {
             System.out.println("\t -kmer \t the size of the kmer to use");
             System.out.println("\t -gz \t the fasta file is gziped (true/false)");
             System.out.println("\t -o \t output directory for the index files");
+            System.out.println("\t\tExample: java -jar kmap.jar index -reference reference.fa -kmer 22 -gz false -o .");
             
             System.out.println("Mapping");
             System.out.println("Name: map");
-            System.out.println("\t -fastq \t the fastq file to map");
+            System.out.println("\t -fastq \t the fastq file to map, the output file will have the same name, exept .fastq is changed to .bam");
             System.out.println("\t -gz \t the fastq file is gziped (true/false)");
             System.out.println("\t -o \t the output directory");
             System.out.println("\t -kmer \t the used kmer for the index generation "
@@ -186,6 +194,8 @@ public class MappingParameters {
                     + "(-kmer option is needed, -index option is denied)");
             System.out.println("\t -index \t the path to the index files"
                     + "(-kmer option is denied, -reference is not needed)");
+            System.out.println("\t\tExample: java -jar kmap.jar map -gz false -fastq test.fastq -o . -index .");
+            System.out.println("\t\tExample: java -jar kmap.jar map -gz false -fastq test.fastq -o . -reference chr22.part2.fa -kmer 15");
     }
     
 }

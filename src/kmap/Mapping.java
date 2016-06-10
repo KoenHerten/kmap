@@ -94,6 +94,7 @@ public class Mapping {
     }
     
     public void map(String fastqFile, boolean isZipped) throws IOException{
+        //start the mapping
         String sampleName = fastqFile.split(File.separator)[fastqFile.split(File.separator).length -1].replace(".fastq", "");
         FastqBufferedReader fastqBufferedReader = new FastqBufferedReader(new File(fastqFile), isZipped);
         FastqRead read;
@@ -101,12 +102,16 @@ public class Mapping {
         SamFileWriter samFileWriter = new SamFileWriter(this.parameters.getOutputDir(), sampleName);
         samFileWriter.writeLine(this.samHeader);
         while ((read = fastqBufferedReader.next()) != null){
+            //start the mapping of the next read
             String sequence = read.getSequence().toLowerCase();
+            //progress output
             readCount++;
             if (readCount % 1000 == 0){
                 System.out.println("Processed " + readCount + " reads.");
             }
+            //reseting maps for results
             HashSet<MappingPosition> mappingPositionsSet = new HashSet<>();
+            //finding all possitions of the locations, normal and reverse
             mappingPositionsSet.addAll(this.mapSequence(sequence));
             mappingPositionsSet.addAll(this.mapSequence(ReadAndCigarManipulation.getReverseComplement(sequence)));
             ArrayList<SamRead> samReadList = new ArrayList<>();
@@ -142,10 +147,10 @@ public class Mapping {
             for (SamRead samRead : samReadList){
                 //print sam reads in the sam file
                 samFileWriter.writeSamLine(samRead);
+                //System.out.println("" + samRead.toString());
             }
         }
-        
-        
+                
         fastqBufferedReader.close();
         samFileWriter.close();
     }
