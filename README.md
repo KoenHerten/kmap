@@ -42,6 +42,7 @@ has a possibility to map reads without first generating the index (ideal when mu
 *    `-kmer` the size of the kmer to use
 *    `-gz`   the fasta file is gziped (true/false)
 *    `-o`    output directory for the index files
+
 ### map
 *    `-fastq`    the fastq file to map
 *    `-gz`   the fastq file is gziped (true/false)
